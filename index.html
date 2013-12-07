@@ -1,0 +1,233 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Annotations by marcioAlmada</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Annotations</h1>
+        <p>A lightweight PHP annotation library.</p>
+
+        <p class="view"><a href="https://github.com/marcioAlmada/annotations">View the Project on GitHub <small>marcioAlmada/annotations</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/marcioAlmada/annotations/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/marcioAlmada/annotations/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/marcioAlmada/annotations">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="minime--annotations" class="anchor" href="#minime--annotations"><span class="octicon octicon-link"></span></a>Minime \ Annotations</h1>
+
+<p><a href="https://travis-ci.org/marcioAlmada/annotations"><img src="https://travis-ci.org/marcioAlmada/annotations.png?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/r/marcioAlmada/annotations?branch=master"><img src="https://coveralls.io/repos/marcioAlmada/annotations/badge.png?branch=master" alt="Coverage Status"></a>
+<a href="https://scrutinizer-ci.com/g/marcioAlmada/annotations/"><img src="https://scrutinizer-ci.com/g/marcioAlmada/annotations/badges/quality-score.png?s=dba04c50549638ca00a6f22ff35903066f351909" alt="Scrutinizer Quality Score"></a>
+<a href="https://packagist.org/packages/minime/annotations"><img src="https://poser.pugx.org/minime/annotations/v/stable.png" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/minime/annotations"><img src="https://poser.pugx.org/minime/annotations/downloads.png" alt="Total Downloads"></a></p>
+
+<p>Minime\Annotations is a very simple PHP library that lets you create APIs
+that react to metadata with great flexibility and no headache.</p>
+
+<h2>
+<a name="features--roadmap" class="anchor" href="#features--roadmap"><span class="octicon octicon-link"></span></a>Features &amp; Roadmap</h2>
+
+<ul>
+<li>
+<del>[DONE]</del> Class, property and method annotations</li>
+<li>
+<del>[DONE]</del> Namespaced annotations</li>
+<li>
+<del>[DONE]</del> API to filter and traverse annotations</li>
+<li>
+<del>[DONE]</del> Traits (for convenient integration)</li>
+<li>Parser
+
+<ul>
+<li>
+<del>[DONE]</del> <b>Optional</b> strong typed annotations: float, integer, string, json</li>
+<li>
+<del>[DONE]</del> Dynamic annotations (eval type)</li>
+<li>
+<del>[DONE]</del> Implicit boolean annotations</li>
+<li>
+<del>[DONE]</del> Multiple value annotations</li>
+<li>
+<del>[DONE]</del> Inline Docblock support (see <a href="https://github.com/marcioAlmada/annotations/issues/15">#15</a>)</li>
+<li>[TODO] Multiline annotations value (see <a href="https://github.com/marcioAlmada/annotations/issues/16">#16</a>)</li>
+<li>[TODO] Parser improvements and optimizations (see <a href="https://github.com/marcioAlmada/annotations/issues/17">#17</a>)</li>
+</ul>
+</li>
+</ul><h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Manually update <code>composer.json</code> with:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span>
+  <span class="nt">"require"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">"minime/annotations"</span><span class="p">:</span> <span class="s2">"~1.1"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p>Or just use your terminal: <code>composer require minime/annotations:~1.1</code> <img class="emoji" title=":8ball:" alt=":8ball:" src="https://github.global.ssl.fastly.net/images/icons/emoji/8ball.png" height="20" width="20" align="absmiddle"></p>
+
+<h2>
+<a name="basic-usage" class="anchor" href="#basic-usage"><span class="octicon octicon-link"></span></a>Basic Usage</h2>
+
+<h3>
+<a name="using-as-a-trait" class="anchor" href="#using-as-a-trait"><span class="octicon octicon-link"></span></a>Using as a trait</h3>
+
+<p>The trait approach is useful for self / internal reflection:</p>
+
+<div class="highlight highlight-php"><pre><span class="sd">/**</span>
+<span class="sd"> * @get @post @delete</span>
+<span class="sd"> * @entity bar</span>
+<span class="sd"> * @has-many Baz</span>
+<span class="sd"> * @accept json ["json", "xml", "csv"]</span>
+<span class="sd"> * @max integer 45</span>
+<span class="sd"> * @delta float .45</span>
+<span class="sd"> * @cache-duration eval 1000 * 24 * 60 * 60</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">FooController</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Minime\Annotations\Traits\Reader</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$foo</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">();</span>
+<span class="nv">$annotations</span> <span class="o">=</span> <span class="nv">$foo</span><span class="o">-&gt;</span><span class="na">getClassAnnotations</span><span class="p">();</span>
+
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'get'</span><span class="p">)</span>      <span class="c1">// &gt; bool(true)</span>
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'post'</span><span class="p">)</span>     <span class="c1">// &gt; bool(true)</span>
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'delete'</span><span class="p">)</span>   <span class="c1">// &gt; bool(true)</span>
+
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'entity'</span><span class="p">)</span>   <span class="c1">// &gt; string(3) "bar"</span>
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'has-many'</span><span class="p">)</span> <span class="c1">// &gt; string(3) "Baz"</span>
+
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'accept'</span><span class="p">)</span>   <span class="c1">// &gt; array(3){ [0] =&gt; "json" [1] =&gt; "xml" [2] =&gt; "csv" }</span>
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'max'</span><span class="p">)</span>      <span class="c1">// &gt; int(45)</span>
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'delta'</span><span class="p">)</span>    <span class="c1">// &gt; double(0.45)</span>
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'cache-duration'</span><span class="p">)</span>    <span class="c1">// &gt; int(86400000)</span>
+
+<span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'undefined'</span><span class="p">)</span>  <span class="c1">// &gt; null</span>
+</pre></div>
+
+<p>Getting annotations from property and methods is easy too:</p>
+
+<div class="highlight highlight-php"><pre><span class="nv">$foo</span><span class="o">-&gt;</span><span class="na">getPropertyAnnotations</span><span class="p">(</span><span class="s1">'property_name'</span><span class="p">);</span>
+<span class="nv">$foo</span><span class="o">-&gt;</span><span class="na">getMethodAnnotations</span><span class="p">(</span><span class="s1">'method_name'</span><span class="p">);</span>
+</pre></div>
+
+<h3>
+<a name="using-the-facade" class="anchor" href="#using-the-facade"><span class="octicon octicon-link"></span></a>Using the facade</h3>
+
+<p>The facade is useful when you want to inspect classes out of your logic domain:</p>
+
+<div class="highlight highlight-php"><pre><span class="k">use</span> <span class="nx">Minime\Annotations\Facade</span><span class="p">;</span>
+
+<span class="nx">Facade</span><span class="o">::</span><span class="na">getClassAnnotations</span><span class="p">(</span><span class="s1">'Full\Class\Name'</span><span class="p">);</span>
+<span class="nx">Facade</span><span class="o">::</span><span class="na">getPropertyAnnotations</span><span class="p">(</span><span class="s1">'Full\Class\Name'</span><span class="p">,</span> <span class="s1">'property_name'</span><span class="p">);</span>
+<span class="nx">Facade</span><span class="o">::</span><span class="na">getMethodAnnotations</span><span class="p">(</span><span class="s1">'Full\Class\Name'</span><span class="p">,</span> <span class="s1">'method_name'</span><span class="p">);</span>
+</pre></div>
+
+<h3>
+<a name="grepping-and-traversing" class="anchor" href="#grepping-and-traversing"><span class="octicon octicon-link"></span></a>Grepping and traversing</h3>
+
+<p>Let's suppose you want to pick just a group of annotations:</p>
+
+<div class="highlight highlight-php"><pre><span class="sd">/**</span>
+<span class="sd"> * @response.xml</span>
+<span class="sd"> * @response.xls</span>
+<span class="sd"> * @response.json</span>
+<span class="sd"> * @response.csv</span>
+<span class="sd"> * @method.get</span>
+<span class="sd"> * @method.post</span>
+<span class="sd"> */</span>
+<span class="k">class</span> <span class="nc">WebService</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">Minime\Annotations\Traits\Reader</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$annotations</span> <span class="o">=</span> <span class="p">(</span><span class="k">new</span> <span class="nx">WebService</span><span class="p">())</span><span class="o">-&gt;</span><span class="na">getClassAnnotations</span><span class="p">();</span>
+</pre></div>
+
+<h4>
+<a name="retrieving-all-annotations-within-response-namespace" class="anchor" href="#retrieving-all-annotations-within-response-namespace"><span class="octicon octicon-link"></span></a>Retrieving all annotations within 'response' namespace</h4>
+
+<div class="highlight highlight-php"><pre><span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">useNamespace</span><span class="p">(</span><span class="s1">'response'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">();</span>
+<span class="c1">// &gt; array(3){</span>
+<span class="c1">// &gt;    ["xml"]  =&gt; (bool) TRUE,</span>
+<span class="c1">// &gt;    ["xls"]  =&gt; (bool) TRUE,</span>
+<span class="c1">// &gt;    ["json"] =&gt; (bool) TRUE,</span>
+<span class="c1">// &gt;    ["csv"]  =&gt; (bool) TRUE</span>
+<span class="c1">// &gt; }</span>
+</pre></div>
+
+<h4>
+<a name="chainning-with-grep-to-get-all-annotations-beginning-with-x-within-response-namespace" class="anchor" href="#chainning-with-grep-to-get-all-annotations-beginning-with-x-within-response-namespace"><span class="octicon octicon-link"></span></a>Chainning with grep to get all annotations beginning with 'x' within 'response' namespace:</h4>
+
+<div class="highlight highlight-php"><pre><span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">useNamespace</span><span class="p">(</span><span class="s1">'response'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">grep</span><span class="p">(</span><span class="s1">'^x'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">export</span><span class="p">();</span>
+<span class="c1">// &gt; array(3){</span>
+<span class="c1">// &gt;    ["xml"]  =&gt; (bool) TRUE,</span>
+<span class="c1">// &gt;    ["xls"]  =&gt; (bool) TRUE</span>
+<span class="c1">// &gt; }</span>
+</pre></div>
+
+<h4>
+<a name="traversing-results" class="anchor" href="#traversing-results"><span class="octicon octicon-link"></span></a>Traversing results</h4>
+
+<div class="highlight highlight-php"><pre><span class="k">foreach</span><span class="p">(</span><span class="nv">$annotations</span><span class="o">-&gt;</span><span class="na">useNamespace</span><span class="p">(</span><span class="s1">'method'</span><span class="p">)</span> <span class="k">as</span> <span class="nv">$annotation</span> <span class="o">=&gt;</span> <span class="nv">$value</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// some behavior</span>
+<span class="p">}</span>
+</pre></div>
+
+<h2>
+<a name="want-to-contribute" class="anchor" href="#want-to-contribute"><span class="octicon octicon-link"></span></a>Want to contribute?</h2>
+
+<p>Found a bug? Have an improvement? Take a look at the <a href="https://github.com/marcioAlmada/annotations/issues">issues</a>, there is always something to be done. Please, send pull requests to develop branch only.</p>
+
+<h3>
+<a name="steps" class="anchor" href="#steps"><span class="octicon octicon-link"></span></a>Steps</h3>
+
+<ol>
+<li>Fork <a href="https://github.com/marcioAlmada/annotations/fork">minime\annotations</a>
+</li>
+<li>Clone forked repository</li>
+<li>Install composer dependencies <code>$ composer install --prefer-dist</code>
+</li>
+<li>Run unit tests <code>$ phpunit</code>
+</li>
+<li>Modify code: correct bug, implement features</li>
+<li>Back to step 4</li>
+</ol><blockquote>
+<p>PLEASE, be objective with pull requests. Avoid combos of improvements + doc + solve bugs + features within the same pull request.</p>
+</blockquote>
+
+<h2>
+<a name="copyright" class="anchor" href="#copyright"><span class="octicon octicon-link"></span></a>Copyright</h2>
+
+<p>Copyright (c) 2013 Márcio Almada. Distributed under the terms of an MIT-style license. See LICENSE for details.</p>
+
+<p><a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.cloudfront.net/marcioAlmada/annotations/trend.png" alt="Bitdeli Badge"></a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/marcioAlmada">marcioAlmada</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
